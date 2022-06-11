@@ -14,14 +14,17 @@ int main() {
 		switch (userChoice)
 		{
 		case 1:
+			system("cls");
 			cout << "Вход" << endl;
 			break;
 
 		case 2:
+			system("cls");
 			cout << "Регистрация" << endl;
 			break;
 
 		case 3:
+			system("cls");
 			cout << "Справка" << endl;
 			break;
 
