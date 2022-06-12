@@ -17,8 +17,8 @@ string userSearch(string login, string password) {//ищем пользователя при автори
 		for (logfile >> str; !logfile.eof(); logfile >> str) { //считка слов из файла. Надо бы считывать только логин...
 			if (str == login) { //если введённое слово есть в файле
 				getline(logfile, str);
-				str.erase(0, str.find_last_of(" ")+1); //вытаскиваем пароль пользователя из файла
-				
+				str.erase(0, str.find_last_of(" ") + 1); //вытаскиваем пароль пользователя из файла
+
 				if (str == password) { //если пароли совпадают - заходим в систему
 					answer = "Добро пожаловать в чат.\n";
 					break;
