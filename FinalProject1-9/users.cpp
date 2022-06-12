@@ -1,5 +1,4 @@
 #include "users.h"
-
 using namespace std;
 
 
@@ -26,6 +25,16 @@ void signUp() {
 		}
 	}
 }
+
+void signIn() {
+	string login, password;
+	cout << "Ведите логин" << endl;
+	cin >> login;
+	cout << "Ведите пароль" << endl;
+	cin >> password;
+	cout << userSearch(login, password);
+}
+
 
 /*
 users::users(string login, string name, string password) {

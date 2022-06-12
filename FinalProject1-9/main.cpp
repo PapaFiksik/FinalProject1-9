@@ -1,29 +1,30 @@
 /*
-регистрация пользователей - логин, пароль, имя
-вход в чат по логину/паролю
+регистрация пользователей - логин, пароль, имя - ГОТОВО
+вход в чат по логину/паролю - ЧАСТИЧНО ГОТОВО
 отправка сообщений конкретному пользователю
 обмен сообщениями между всеми пользователями чата одновременно
 Дополнительно можно реализовать обработку исключений и использование шаблонов.
 */
+#include <windows.h>
 #include "users.h"
 using namespace std;
 
 int main() {
-	setlocale(LC_ALL, "rus"); // почему не принимает русский язык? Нельзя использовать русский при вводе
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+
 	bool work = true;
 
 	while (work) {
-
 		cout << "1 - Вход. 2 - Регистрация. 3 - Справка. 0 - Выход." << endl;
 		short userChoice;
 		cin >> userChoice;
 
-		switch (userChoice)
-		{
+		switch (userChoice) {
 		case 1:
 			system("cls");
 			cout << "Вход" << endl;
-			//signIn();
+			signIn();
 			break;
 
 		case 2:
@@ -47,5 +48,6 @@ int main() {
 			break;
 		}
 	}
+
 	return 0;
 }
