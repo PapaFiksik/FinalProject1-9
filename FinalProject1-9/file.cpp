@@ -35,44 +35,4 @@ string userSearch(string login, string password) {//ищем пользователя при автори
 	}
 
 	return answer;
-
-
 }
-
-
-
-
-
-
-/*string userSearch(string login, string password) {
-	ifstream logfile("logfile.txt", ios_base::in); //открыть только для чтения
-	string tempLogin, tempPassword, line, answer;
-
-	if (logfile.is_open()) {
-		answer = "Пользователь не найден.\n";
-		while (!logfile.eof()) {
-			logfile >> tempLogin;
-
-			if (tempLogin == login)	{
-				logfile >> tempPassword;
-				//if (tempPassword == password) {
-					answer = "Добро пожаловать в чат.\n";
-					break;
-				//}
-				//else {
-				//	answer = "Неверный пароль.\n";
-				//  break;
-				//}
-			}
-			tempLogin.clear();
-			tempPassword.clear();
-		}
-
-		logfile.close();
-	}
-	else { // если файл не открыт
-		answer = "Файл не может быть открыт!\n"; // сообщить об этом
-	}
-
-	return answer;
-}*/

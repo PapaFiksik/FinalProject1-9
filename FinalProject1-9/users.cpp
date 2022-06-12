@@ -34,11 +34,3 @@ void signIn() {
 	cin >> password;
 	cout << userSearch(login, password);
 }
-
-
-/*
-users::users(string login, string name, string password) {
-	userLogin = login;
-	userName = name;
-	userPassword = password;
-}*/
