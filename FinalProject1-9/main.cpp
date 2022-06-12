@@ -5,15 +5,17 @@
 обмен сообщениями между всеми пользователями чата одновременно
 Дополнительно можно реализовать обработку исключений и использование шаблонов.
 */
-#include <windows.h>
 #include "users.h"
+#include <windows.h>
+
 using namespace std;
+
+bool work = true;
+bool authorisation = false;
 
 int main() {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
-
-	bool work = true;
 
 	while (work) {
 		cout << "1 - Вход. 2 - Регистрация. 3 - Справка. 0 - Выход." << endl;
@@ -25,6 +27,10 @@ int main() {
 			system("cls");
 			cout << "Вход" << endl;
 			signIn();
+			if (authorisation) {
+				//cout << user.getUserLogin() << " " << user.getUserName() << endl;
+				//chat();
+			}
 			break;
 
 		case 2:
