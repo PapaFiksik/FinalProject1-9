@@ -10,8 +10,10 @@ void signIn();
 class Users
 {
 public:
-	Users(string login, string name);
+	Users();
 	~Users();
+
+	void setUser(string login, string name);
 
 	string getUserLogin() const;
 	string getUserName() const;

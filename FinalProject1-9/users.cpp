@@ -1,16 +1,17 @@
 #include "users.h"
 using namespace std;
 extern bool authorisation;
+extern Users user;
 
-Users::Users(string login, string name) {
-	userLogin = login;
-	userName = name;
-	cout << "Конструктор вызван" << endl;
+Users::Users() {
 }
 
-Users::~Users()
-{
-	cout << "Деструктор вызван" << endl;
+Users::~Users() {
+}
+
+void Users::setUser(string login, string name) {
+	userLogin = login;
+	userName = name;
 }
 
 string Users::getUserLogin() const {
@@ -34,7 +35,7 @@ void signUp() {
 	cout << "Ведите имя" << endl;
 	cin >> name;
 
-	while (1) {
+	for (int i = 0; i < 2; i++) {
 		cout << "Ведите пароль" << endl;
 		cin >> password;
 		cout << "Повторите пароль" << endl;
@@ -43,11 +44,13 @@ void signUp() {
 			ofstream logfile("logfile.txt", ios_base::app); //запись в конец файла
 			logfile << login << " " << name << " " << password << endl;
 			logfile.close();
-			cout << "Новый пользователь успешно зарегистрирован. Добро пожаловать в чат, " << name << endl;
 			break;
 		}
-		else {
+		else if (i == 0) {
 			cout << "Пароли не совпадают. Повторите попытку" << endl;
+		}
+		else {
+			cout << "В регистрации отказано" << endl;
 		}
 	}
 }
@@ -63,33 +66,29 @@ void signIn() {
 	string str, login, name, password, answer;
 
 	if (logfile.is_open()) {
-		answer = "Пользователь не найден.\n";
-
 		for (getline(logfile, str); !logfile.eof(); getline(logfile, str)) { //считываем слова построчно из файла
 			login = str.substr(0, str.find(" "));
 			name = str.substr(str.find(" ")+1, str.find_last_of(" ") - str.find(" ") - 1);
 			password = str.substr(str.find_last_of(" ")+1);
-			cout << login << " " << name << " " << password << " " << endl;
+
 			if (login == tempLogin) { //если логины совпадают
 				if (password == tempPassword) { //если пароли совпадают - заходим в систему
-					answer = "Добро пожаловать в чат, " + name + ".\n";
-					////////////класс создаётся и уничтожается сразу. Нужен постоянный. Надо создать его в main? или статик?
-					static Users user(login, name); //создаём класс с авторизованным пользователем
-					cout << user.getUserLogin() << " " << user.getUserName() << endl;
-					////////////
-
+					user.setUser(login, name); // заполняем класс user
 					authorisation = true;
 					break;
 				}
 				else {
-					answer = "Неверный пароль.\n";
+					cout << "Неверный пароль." << endl;
 					break;
 				}
 			}
 		}
+		if (authorisation == false) {
+			cout << "Пользователь не найден." << endl;
+		}
 	}
 	else { //если файл не открыт
-		answer = "Файл с данными пользователей недоступен!\n"; //сообщить об этом
+		cout << "Файл с данными пользователей недоступен!" << endl; //сообщить об этом
 	}
 
 	cout << answer;
