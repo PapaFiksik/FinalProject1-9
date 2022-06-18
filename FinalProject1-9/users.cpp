@@ -32,15 +32,19 @@ void signUp() {
 
 	cout << "Ведите логин" << endl;
 	cin >> login;
+	cin.ignore(256, '\n');
 	cout << "Ведите имя" << endl;
 	cin >> name;
+	cin.ignore(256, '\n');
 
 	for (int i = 0; i < 2; i++) {
 		cout << "Ведите пароль" << endl;
 		cin >> password;
+		cin.ignore(256, '\n');
 		cout << "Повторите пароль" << endl;
 		cin >> passwordConfirm;
-		if (password == passwordConfirm) {
+		cin.ignore(256, '\n');
+		if (password == passwordConfirm) { ///////////////////////////////////// ДОБАВИТЬ ОБРАБОТКУ ИСКЛЮЧЕНИЯ невозможности сохранить файл.
 			ofstream logfile("logfile.txt", ios_base::app); //запись в конец файла
 			logfile << login << " " << name << " " << password << endl;
 			logfile.close();
@@ -59,11 +63,13 @@ void signIn() {
 	string tempLogin, tempPassword;
 	cout << "Ведите логин" << endl;
 	cin >> tempLogin;
+	cin.ignore(256, '\n');
 	cout << "Ведите пароль" << endl;
 	cin >> tempPassword;
+	cin.ignore(256, '\n');
 
 	ifstream logfile("logfile.txt", ios_base::in); //открыть только для чтения
-	string str, login, name, password, answer;
+	string str, login, name, password;
 
 	if (logfile.is_open()) {
 		for (getline(logfile, str); !logfile.eof(); getline(logfile, str)) { //считываем слова построчно из файла
@@ -90,6 +96,22 @@ void signIn() {
 	else { //если файл не открыт
 		cout << "Файл с данными пользователей недоступен!" << endl; //сообщить об этом
 	}
+}
 
-	cout << answer;
+
+
+int* getAllUsers() {
+	/*int* usersArray;
+	for (int i = 0; i < 3; i++) {
+		usersArray[i]++;
+	}
+	return usersArray;*/
+	return 0;
+}
+
+void sendMessage(string from, string to, string message) {
+	ofstream messagesfile("messagesfile.txt", ios_base::app); //запись в конец файла
+	messagesfile << from << " " << to << " " << message << endl;
+	messagesfile.close();
+	cout << " - Отправлено." << endl;
 }

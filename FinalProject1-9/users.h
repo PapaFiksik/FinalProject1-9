@@ -4,9 +4,6 @@
 #include <string>
 using namespace std;
 
-void signUp();
-void signIn();
-
 class Users
 {
 public:
@@ -19,10 +16,13 @@ public:
 	string getUserName() const;
 
 private:
-	
 	string userLogin;
 	string userName;
-	//Динамическое выделение памяти
-	//string* userLogin = new string;
-	//string* userName = new string;
 };
+
+
+
+void signUp();
+void signIn();
+int* getAllUsers();
+void sendMessage(string from, string to, string message);
