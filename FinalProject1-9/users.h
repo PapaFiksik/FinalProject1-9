@@ -24,6 +24,6 @@ private:
 
 void signUp();
 void signIn();
-int* getAllUsers();
+string getUsersChoise();
 void sendMessage(string from, string to, string message);
 void getNewMessages(string message);

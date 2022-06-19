@@ -49,6 +49,8 @@ void signUp() {
 			ofstream logfile("logfile.txt", ios_base::app); // Открываем файл с записью в конец файла.
 			logfile << login << " " << name << " " << password << endl;
 			logfile.close();
+			user.setUser(login, name);
+			authorisation = true;
 			break;
 		}
 		else if (i == 0) {
@@ -90,7 +92,7 @@ void signIn() {
 				}
 			}
 		}
-		if (authorisation == false) {
+		if (logfile.eof()) {
 			cout << "Пользователь не найден." << endl;
 		}
 
@@ -103,13 +105,60 @@ void signIn() {
 
 
 
-int* getAllUsers() {
-	/*int* usersArray;
-	for (int i = 0; i < 3; i++) {
-		usersArray[i]++;
+string getUsersChoise() {
+	ifstream logfile(("logfile.txt"), ios_base::in); // Открываем файл с логинами только для чтения.
+
+	if (logfile.is_open()) {
+		string str, login;
+		int count = 1, userChoise;
+
+		while (getline(logfile, str)) { // Выводим логины пользователей
+			login = str.substr(0, str.find(" "));
+			if (login == user.getUserLogin()) { // Не выводим логин авторизованного пользователя
+				continue;
+			}
+			cout << count++ << " " << login << endl;
+		}
+		
+		logfile.clear(); // Переводим каретку в начало файла.
+		logfile.seekg(0, std::ios::beg);
+
+		cout << "Выберите пользователя (Введите число). 0 - для выхода." << endl;
+		cin >> userChoise;
+		cin.ignore(256, '\n');
+		cin.clear();
+		if (userChoise > 0 && userChoise < count) {
+			count = 1;
+			string to;
+			while (getline(logfile, str)) {
+				if (str.substr(0, str.find(" ")) == user.getUserLogin()) { // Не считем строку с авторизованным пользователем
+					continue;
+				}
+				else if (count == userChoise) {
+					to = str.substr(0, str.find(" "));
+					break;
+				}
+				count++;
+			}
+
+
+			logfile.close();
+			return to;
+		}
+		else if (userChoise == 0) {
+			logfile.close();
+			return "";
+		}
+		else {
+			logfile.close();
+			cout << "Введено неверное значение." << endl;
+			return "";
+		}
 	}
-	return usersArray;*/
-	return 0;
+	else { // Если файл не открыт, то сообщаем об этом.
+		cout << "Файл с пользователями недоступен!";
+		return "";
+	}
 }
 
 void sendMessage(string from, string to, string message) { ///////////////// ДОБАВИТЬ ОБРАБОТКУ ИСКЛЮЧЕНИЯ невозможности отправить сообщение

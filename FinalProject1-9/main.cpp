@@ -1,10 +1,11 @@
 /*
 регистрация пользователей - логин, пароль, имя - ГОТОВО
 вход в чат по логину/паролю - ГОТОВО
-отправка сообщений конкретному пользователю
+отправка сообщений конкретному пользователю - ЧАСТИЧНО ГОТОВО
 обмен сообщениями между всеми пользователями чата одновременно - ГОТОВО
 Дополнительно можно реализовать обработку исключений и использование шаблонов.
 ДОБАВИТЬ ОБРАБОТКУ ИСКЛЮЧЕНИЯ, когда невозможно сохранить файл в user.cpp->signUp().
+ДОБАВИТЬ ЗАПРЕТ НА РЕГИСТРАЦИЮ с уже имеющимся логином user.cpp->signUp().
 ДОБАВИТЬ ОБРАБОТКУ ИСКЛЮЧЕНИЯ, когда невозможно отправить сообщение user.cpp->sendMessage().
 ДОБАВИТЬ ОБРАБОТКУ ИСКЛЮЧЕНИЯ, когда пользователь вводит огромное число user.cpp->getNewMessages().
 */
@@ -25,16 +26,16 @@ void multipleChat();
 int main() { // ГЛАВНОЕ МЕНЮ
 	SetConsoleCP(1251); // Русская локализация.
 	SetConsoleOutputCP(1251); // Русская локализация.
-	char userChoice = 0;
+	char userChoice_work = 0;
 
 	while (work) {
 		cout << "--------------- Главное меню ---------------" << endl;
 		cout << "1 - Вход. 2 - Регистрация. 3 - Справка. 0 - Выход из программы." << endl;
 
-		cin >> userChoice;
+		cin >> userChoice_work;
 		cin.ignore(256, '\n'); // Игнорируем символы которые находятся после пробела.
 
-		switch (userChoice) {
+		switch (userChoice_work) {
 		case '1':
 			system("cls");
 			cout << "---------- Вход в личный кабинет ----------" << endl;
@@ -59,7 +60,7 @@ int main() { // ГЛАВНОЕ МЕНЮ
 			cout << "---------- Справка ----------" << endl;
 			cout << "Проект подготовлен специально для SkillFactory." << endl;
 			cout << "Проект сделал Григорий Прозоров, поток: CPLUS_19, курс: Разработчик на С++, школа: SkillFactory." << endl << endl;
-			cout << "Информация по использованию программы находится в ReadMe." << endl;
+			cout << "Более подробная информация о программе находится в Readme." << endl;
 			break;
 
 		case '0':
@@ -80,15 +81,16 @@ int main() { // ГЛАВНОЕ МЕНЮ
 void userAuthorized() { // ЛИЧНЫЙ КАБИНЕТ ПОЛЬЗОВАТЕЛЯ
 	system("cls");
 	bool chat = true;
-	char userChoice1 = 0;
+	char userChoice_chat = 0;
 
 	while (chat) {
 		cout << "---------- Добро пожаловать в личный кабинет, " << user.getUserName() << ". ----------" << endl;
-		cout << "1 - Чат с одним пользователем. 2 - Общий чат. 3 - Вывести новые личные сообщения. 0 - Выход из чата." << endl;
-		cin >> userChoice1;
+		cout << "1 - Чат с одним пользователем. 2 - Общий чат. 0 - Выход из чата." << endl;
+		cin.clear();
+		cin >> userChoice_chat;
 		cin.ignore(256, '\n'); // Игнорируем символы которые находятся после пробела.
 
-		switch (userChoice1) {
+		switch (userChoice_chat) {
 		case '1':
 			system("cls");
 			singleChat();
@@ -97,11 +99,6 @@ void userAuthorized() { // ЛИЧНЫЙ КАБИНЕТ ПОЛЬЗОВАТЕЛЯ
 		case '2':
 			system("cls");
 			multipleChat();
-			break;
-
-		case '3':
-			system("cls");
-
 			break;
 
 		case '0':
@@ -119,8 +116,34 @@ void userAuthorized() { // ЛИЧНЫЙ КАБИНЕТ ПОЛЬЗОВАТЕЛЯ
 }
 
 void singleChat() { // ПРИВАТНЫЙ ЧАТ
-	cout << "Выберите пользователя" << endl;
-	getAllUsers();
+	system("cls");
+	cout << "---------- Выбор пользователя для чата ----------" << endl;
+	string from, to, message;
+	from = user.getUserName();
+	to = getUsersChoise();
+	if (to != "") {
+		system("cls");
+		cout << "---------- Приватный чат с " << to << " ----------" << endl;
+
+		while (message != "0") {
+			cout << from << ": ";
+			getline(cin, message);
+
+			if (message.find("/w") == 0) { // Выводим указанное пользователем кол-во сообщений
+				system("cls");
+				cout << "---------- Приватный чат с " << to << " ----------" << endl;
+				cout << "Введите сообщение. Enter - отправить. 0 - для выхода. /w15 - вывести (15) предыдущих сообщений" << endl;
+				//getNewMessages(message);
+			}
+			else if (message != "0") {
+				system("cls");
+				cout << "---------- Приватный чат с " << to << " ----------" << endl;
+				cout << "Введите сообщение. Enter - отправить. 0 - для выхода. /w15 - вывести (15) предыдущих сообщений" << endl;
+				//sendMessage(from, to, message);
+				//getNewMessages("/w10"); // Получаем 10 последних сообщений
+			}
+		}
+	}
 }
 
 void multipleChat() { // ОБЩИЙ ЧАТ
