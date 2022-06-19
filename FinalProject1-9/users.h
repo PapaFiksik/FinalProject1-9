@@ -26,3 +26,4 @@ void signUp();
 void signIn();
 int* getAllUsers();
 void sendMessage(string from, string to, string message);
+void getNewMessages(string message);
