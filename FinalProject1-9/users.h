@@ -26,4 +26,4 @@ void signUp();
 void signIn();
 string getUsersChoise();
 void sendMessage(string from, string to, string message);
-void getNewMessages(string message);
+void getNewMessages(string to, string message);

@@ -162,23 +162,27 @@ string getUsersChoise() {
 }
 
 void sendMessage(string from, string to, string message) { ///////////////// ДОБАВИТЬ ОБРАБОТКУ ИСКЛЮЧЕНИЯ невозможности отправить сообщение
+	ofstream messagesfile;
 	if (to == "all") {
-		ofstream messagesfile("messagesGlobal.txt", ios_base::app); // Запись в конец файла.
-		messagesfile << from << ": " << message << endl;
-		messagesfile.close();
+		messagesfile.open("messagesGlobal.txt", ios_base::app); // Запись в конец файла.
 	}
 	else {
-		ofstream messagesfile("messagesPrivate.txt", ios_base::app); // Запись в конец файла.
-		messagesfile << from << ": " << to << " " << message << endl;
-		messagesfile.close();
+		if (from > to) {
+			messagesfile.open("messages" + from + to + ".txt", ios_base::app); // Запись в конец файла.
+		}
+		else {
+			messagesfile.open("messages" + to + from + ".txt", ios_base::app); // Запись в конец файла.
+		}
 	}
+	messagesfile << from << ": " << message << endl;
+	messagesfile.close();
 }
 
-void getNewMessages(string message) {
+void getNewMessages(string to, string message) {
 	string numberOfMessages;
 
 	for (int i = 2; i < message.size(); ++i) { // Узнаём сколько сообщений надо прочитать.
-		if (message[i] >= '0' && message[i] <= '9') { ///////////////// ДОБАВИТЬ ОБРАБОТКУ ИСКЛЮЧЕНИЯ, когда пользователь вводит огромное число
+		if (message[i] >= '0' && message[i] <= '9') { ///////////////// ДОБАВИТЬ ОБРАБОТКУ ИСКЛЮЧЕНИЯ, когда пользователь вводит огромное число или команду без цифр
 			numberOfMessages += message[i];
 		}
 		else { // Выходим из функции если есть ошибка в команде.
@@ -189,7 +193,19 @@ void getNewMessages(string message) {
 
 	int num = stoi(numberOfMessages); // Переводим число в численный формат.
 	
-	ifstream messagesfile("messagesGlobal.txt", ios_base::in); // Открываем файл с сообщениями только для чтения.
+	ifstream messagesfile;
+	if (to == "") {  // Открывать общий или приватный файл?
+		messagesfile.open("messagesGlobal.txt", ios_base::in); // Открываем файл с сообщениями только для чтения.
+	}
+	else {
+		string from = user.getUserLogin();
+		if (from > to) {
+			messagesfile.open("messages" + from + to + ".txt", ios_base::app); // Запись в конец файла.
+		}
+		else {
+			messagesfile.open("messages" + to + from + ".txt", ios_base::app); // Запись в конец файла.
+		}
+	}
 
 	if (messagesfile.is_open()) {
 		string str;

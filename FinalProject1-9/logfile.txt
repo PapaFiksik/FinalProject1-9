@@ -1,4 +1,6 @@
-log name pas
-PapaFiksik Grigorii qwe123
-qwe asd zxc
-мастер »гнат €чс
+user1 name1 pas1
+user2 name2 pas2
+user3 name3 pas3
+польз1 им€1 пар1
+польз2 им€2 пар2
+польз3 им€3 пар3
