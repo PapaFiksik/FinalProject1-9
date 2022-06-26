@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "fileErrors.h"
 using namespace std;
 
 class Users

@@ -29,36 +29,68 @@ string Users::getUserName() const {
 
 
 void signUp() {
-	string login, name, password, passwordConfirm;
+	string tempLogin, tempName, tempPassword, tempPasswordConfirm;
 
 	cout << "Ведите логин" << endl;
-	cin >> login;
-	cin.ignore(256, '\n');
-	cout << "Ведите имя" << endl;
-	cin >> name;
+	cin >> tempLogin;
 	cin.ignore(256, '\n');
 
-	for (int i = 0; i < 2; i++) {
-		cout << "Ведите пароль" << endl;
-		cin >> password;
-		cin.ignore(256, '\n');
-		cout << "Повторите пароль" << endl;
-		cin >> passwordConfirm;
-		cin.ignore(256, '\n');
-		if (password == passwordConfirm) { ///////////////////////////////////// ДОБАВИТЬ ОБРАБОТКУ ИСКЛЮЧЕНИЯ невозможности сохранить файл.
-			ofstream logfile("logfile.txt", ios_base::app); // Открываем файл с записью в конец файла.
-			logfile << login << " " << name << " " << password << endl;
-			logfile.close();
-			user.setUser(login, name);
-			authorisation = true;
-			break;
+	ifstream logfile(("logfile.txt"), ios_base::in); // Открываем файл с логинами только для чтения.
+
+	if (logfile.is_open()) {
+		string str, login;
+		int count = 1, userChoise;
+
+		while (getline(logfile, str)) { // Пробегаем по логинам пользователей
+			login = str.substr(0, str.find(" "));
+			if (login == tempLogin) { // Если логин зарегистрирован - отказ в регистрации
+				cout << "Данный логин уже зарегистрирован в системе!" << endl;
+				return;
+				logfile.close();
+			}
+
 		}
-		else if (i == 0) {
-			cout << "Пароли не совпадают. Повторите попытку" << endl;
+	}
+	else { // Если файл не открыт, то сообщаем об этом.
+		cout << "Файл с пользователями недоступен!" << endl;
+		return;
+	}
+
+	cout << "Ведите имя" << endl;
+	cin >> tempName;
+	cin.ignore(256, '\n');
+	try {
+		for (int i = 0; i < 2; i++) {
+			cout << "Ведите пароль" << endl;
+			cin >> tempPassword;
+			cin.ignore(256, '\n');
+			cout << "Повторите пароль" << endl;
+			cin >> tempPasswordConfirm;
+			cin.ignore(256, '\n');
+			if (tempPassword == tempPasswordConfirm) {
+				ofstream logfile("logfile1.txt", ios_base::app); // Открываем файл с записью в конец файла.
+				if (logfile) {
+					logfile << tempLogin << " " << tempName << " " << tempPassword << endl;
+					logfile.close();
+					user.setUser(tempLogin, tempName);
+					authorisation = true;
+					break;
+				}
+				else {
+					throw fileErrors();
+				}
+			}
+			else if (i == 0) {
+				cout << "Пароли не совпадают. Повторите попытку" << endl;
+			}
+			else {
+				cout << "Пароли не совпадают. В регистрации отказано" << endl;
+			}
 		}
-		else {
-			cout << "В регистрации отказано" << endl;
-		}
+	}
+	catch (exception& excep)
+	{
+		cout << excep.what() << endl;
 	}
 }
 
@@ -161,28 +193,43 @@ string getUsersChoise() {
 	}
 }
 
-void sendMessage(string from, string to, string message) { ///////////////// ДОБАВИТЬ ОБРАБОТКУ ИСКЛЮЧЕНИЯ невозможности отправить сообщение
+void sendMessage(string from, string to, string message) {
 	ofstream messagesfile;
-	if (to == "all") {
-		messagesfile.open("messagesGlobal.txt", ios_base::app); // Запись в конец файла.
-	}
-	else {
-		if (from > to) {
-			messagesfile.open("messages" + from + to + ".txt", ios_base::app); // Запись в конец файла.
+	try {
+		if (to == "all") {
+			messagesfile.open("messagesGlobal.txt", ios_base::app); // Запись в конец файла.
 		}
 		else {
-			messagesfile.open("messages" + to + from + ".txt", ios_base::app); // Запись в конец файла.
+			if (from > to) {
+				messagesfile.open("messages" + from + to + ".txt", ios_base::app); // Запись в конец файла.
+			}
+			else {
+				messagesfile.open("messages" + to + from + ".txt", ios_base::app); // Запись в конец файла.
+			}
+		}
+		if (messagesfile) {
+			messagesfile << from << ": " << message << endl;
+			messagesfile.close();
+		}
+		else {
+			throw fileErrors();
 		}
 	}
-	messagesfile << from << ": " << message << endl;
-	messagesfile.close();
+	catch (exception& excep)
+	{
+		cout << excep.what() << endl;
+	}
 }
 
 void getNewMessages(string to, string message) {
 	string numberOfMessages;
+	if (message.size() <= 2 || message.size() >= 6) { // Проверка корректности команды
+		cout << "Команда введена неверно!" << endl;
+		return;
+	}
 
 	for (int i = 2; i < message.size(); ++i) { // Узнаём сколько сообщений надо прочитать.
-		if (message[i] >= '0' && message[i] <= '9') { ///////////////// ДОБАВИТЬ ОБРАБОТКУ ИСКЛЮЧЕНИЯ, когда пользователь вводит огромное число или команду без цифр
+		if (message[i] >= '0' && message[i] <= '9') {
 			numberOfMessages += message[i];
 		}
 		else { // Выходим из функции если есть ошибка в команде.
