@@ -1,5 +1,4 @@
 #include "users.h"
-
 using namespace std;
 extern bool authorisation;
 extern Users user;
@@ -27,28 +26,26 @@ string Users::getUserName() const {
 
 
 
-
-void signUp() {
+void signUp() { // РЕГИСТРАЦИЯ НОВОГО ПОЛЬЗОВАТЕЛЯ
 	string tempLogin, tempName, tempPassword, tempPasswordConfirm;
 
-	cout << "Ведите логин" << endl;
+	cout << "Введите логин" << endl;
 	cin >> tempLogin;
-	cin.ignore(256, '\n');
+	cin.ignore(256, '\n'); // Игнорируем символы которые находятся после пробела.
 
 	ifstream logfile(("logfile.txt"), ios_base::in); // Открываем файл с логинами только для чтения.
 
-	if (logfile.is_open()) {
+	if (logfile.is_open()) { // Проверка на уже имеющися логин.
 		string str, login;
 		int count = 1, userChoise;
 
-		while (getline(logfile, str)) { // Пробегаем по логинам пользователей
+		while (getline(logfile, str)) { // Пробегаем по логинам пользователей.
 			login = str.substr(0, str.find(" "));
-			if (login == tempLogin) { // Если логин зарегистрирован - отказ в регистрации
+			if (login == tempLogin) { // Если логин зарегистрирован - отказ в регистрации.
 				cout << "Данный логин уже зарегистрирован в системе!" << endl;
-				return;
 				logfile.close();
+				return;
 			}
-
 		}
 	}
 	else { // Если файл не открыт, то сообщаем об этом.
@@ -56,18 +53,19 @@ void signUp() {
 		return;
 	}
 
-	cout << "Ведите имя" << endl;
+	cout << "Введите имя" << endl;
 	cin >> tempName;
 	cin.ignore(256, '\n');
 	try {
 		for (int i = 0; i < 2; i++) {
-			cout << "Ведите пароль" << endl;
+			cout << "Введите пароль" << endl;
 			cin >> tempPassword;
 			cin.ignore(256, '\n');
 			cout << "Повторите пароль" << endl;
 			cin >> tempPasswordConfirm;
 			cin.ignore(256, '\n');
-			if (tempPassword == tempPasswordConfirm) {
+
+			if (tempPassword == tempPasswordConfirm) { // Сверяем пароли. Если совпадают - сохраняем нового пользователя.
 				ofstream logfile("logfile1.txt", ios_base::app); // Открываем файл с записью в конец файла.
 				if (logfile) {
 					logfile << tempLogin << " " << tempName << " " << tempPassword << endl;
@@ -84,22 +82,23 @@ void signUp() {
 				cout << "Пароли не совпадают. Повторите попытку" << endl;
 			}
 			else {
-				cout << "Пароли не совпадают. В регистрации отказано" << endl;
+				cout << "Пароли опять не совпадают. В регистрации отказано" << endl;
 			}
 		}
 	}
-	catch (exception& excep)
+	catch (exception& excep) // Выводим сообщение об ошибке если файл не открылся или не создался.
 	{
 		cout << excep.what() << endl;
 	}
 }
 
-void signIn() {
+void signIn() { // АВТОРИЗАЦИЯ ПОЛЬЗОВАТЕЛЯ
 	string tempLogin, tempPassword;
-	cout << "Ведите логин" << endl;
+
+	cout << "Введите логин" << endl;
 	cin >> tempLogin;
-	cin.ignore(256, '\n');
-	cout << "Ведите пароль" << endl;
+	cin.ignore(256, '\n'); // Игнорируем символы которые находятся после пробела.
+	cout << "Введите пароль" << endl;
 	cin >> tempPassword;
 	cin.ignore(256, '\n');
 
@@ -130,26 +129,24 @@ void signIn() {
 
 		logfile.close();
 	}
-	else { // Если файл не открыт, то сообщаем об этом.
+	else { // Выводим сообщение об ошибке если файл не открылся или не создался.
 		cout << "Файл с данными пользователей недоступен!" << endl;
 	}
 }
 
-
-
-string getUsersChoise() {
+string getUsersChoise() { // ВЫБОР ПОЛЬЗОВАТЕЛЯ ДЛЯ ПРИВАТНОГО ЧАТА
 	ifstream logfile(("logfile.txt"), ios_base::in); // Открываем файл с логинами только для чтения.
 
 	if (logfile.is_open()) {
 		string str, login;
 		int count = 1, userChoise;
 
-		while (getline(logfile, str)) { // Выводим логины пользователей
+		while (getline(logfile, str)) { // Проходим по всем строкам файла.
 			login = str.substr(0, str.find(" "));
-			if (login == user.getUserLogin()) { // Не выводим логин авторизованного пользователя
+			if (login == user.getUserLogin()) { // Не выводим логин авторизованного пользователя.
 				continue;
 			}
-			cout << count++ << " " << login << endl;
+			cout << count++ << " " << login << endl; // Выводим логины пользователей.
 		}
 		
 		logfile.clear(); // Переводим каретку в начало файла.
@@ -159,9 +156,11 @@ string getUsersChoise() {
 		cin >> userChoise;
 		cin.ignore(256, '\n');
 		cin.clear();
+
 		if (userChoise > 0 && userChoise < count) {
 			count = 1;
 			string to;
+
 			while (getline(logfile, str)) {
 				if (str.substr(0, str.find(" ")) == user.getUserLogin()) { // Не считем строку с авторизованным пользователем
 					continue;
@@ -173,9 +172,8 @@ string getUsersChoise() {
 				count++;
 			}
 
-
 			logfile.close();
-			return to;
+			return to; // Возвращаем логин выбранного пользователя
 		}
 		else if (userChoise == 0) {
 			logfile.close();
@@ -187,43 +185,43 @@ string getUsersChoise() {
 			return "";
 		}
 	}
-	else { // Если файл не открыт, то сообщаем об этом.
+	else { // Выводим сообщение об ошибке если файл не открылся или не создался.
 		cout << "Файл с пользователями недоступен!";
 		return "";
 	}
 }
 
-void sendMessage(string from, string to, string message) {
-	ofstream messagesfile;
+void sendMessage(string from, string to, string message) { // ФУНКЦИЯ ОТПРАВКИ СООБЩЕНИЯ
+	ofstream messagesFile;
 	try {
-		if (to == "all") {
-			messagesfile.open("messagesGlobal.txt", ios_base::app); // Запись в конец файла.
+		if (to == "all") { // В зависимости от выбранного чата открываем нужный файл.
+			messagesFile.open("messagesGlobal.txt", ios_base::app);
 		}
 		else {
-			if (from > to) {
-				messagesfile.open("messages" + from + to + ".txt", ios_base::app); // Запись в конец файла.
+			if (from > to) { // Создаём файл с чатом для двух конкретных пользователей.
+				messagesFile.open("messages" + from + to + ".txt", ios_base::app);
 			}
 			else {
-				messagesfile.open("messages" + to + from + ".txt", ios_base::app); // Запись в конец файла.
+				messagesFile.open("messages" + to + from + ".txt", ios_base::app);
 			}
 		}
-		if (messagesfile) {
-			messagesfile << from << ": " << message << endl;
-			messagesfile.close();
+		if (messagesFile) {
+			messagesFile << from << ": " << message << endl; // Записываем сообщение в файл.
+			messagesFile.close();
 		}
 		else {
 			throw fileErrors();
 		}
 	}
-	catch (exception& excep)
+	catch (exception& excep) // Выводим сообщение об ошибке если файл не открылся или не создался.
 	{
 		cout << excep.what() << endl;
 	}
 }
 
-void getNewMessages(string to, string message) {
+void getNewMessages(string to, string message) { // ФУНКЦИЯ ПОЛУЧЕНИЯ СООБЩЕНИЙ
 	string numberOfMessages;
-	if (message.size() <= 2 || message.size() >= 6) { // Проверка корректности команды
+	if (message.size() <= 2 || message.size() >= 6) { // Выходим из функции если командка пришла пустая или значение больше 999.
 		cout << "Команда введена неверно!" << endl;
 		return;
 	}
@@ -238,46 +236,46 @@ void getNewMessages(string to, string message) {
 		}
 	}
 
-	int num = stoi(numberOfMessages); // Переводим число в численный формат.
-	
-	ifstream messagesfile;
-	if (to == "") {  // Открывать общий или приватный файл?
-		messagesfile.open("messagesGlobal.txt", ios_base::in); // Открываем файл с сообщениями только для чтения.
+	int num = stoi(numberOfMessages); // Переводим число в численный формат. Буквы сюда не дойдут.
+	ifstream messagesFile;
+
+	if (to == "") { // В зависимости от выбранного чата открываем нужный файл.
+		messagesFile.open("messagesGlobal.txt", ios_base::in);
 	}
 	else {
 		string from = user.getUserLogin();
-		if (from > to) {
-			messagesfile.open("messages" + from + to + ".txt", ios_base::app); // Запись в конец файла.
+		if (from > to) { // Открываем файл с чатом для двух конкретных пользователей.
+			messagesFile.open("messages" + from + to + ".txt", ios_base::in);
 		}
 		else {
-			messagesfile.open("messages" + to + from + ".txt", ios_base::app); // Запись в конец файла.
+			messagesFile.open("messages" + to + from + ".txt", ios_base::in);
 		}
 	}
 
-	if (messagesfile.is_open()) {
+	if (messagesFile.is_open()) {
 		string str;
 		int allLines = 0, startLine = 0;
 
-		while (getline(messagesfile, str)) { // Считаем сколько всего строк в файле.
+		while (getline(messagesFile, str)) { // Считаем сколько всего строк в файле.
 			allLines++;
 		}
 		startLine = allLines - num;
-		startLine >= 0 ? startLine : startLine = 0; // Считаем с какой строки начать выводить сообщения.
+		startLine >= 0 ? startLine : startLine = 0; // Вычисляем с какой строки начать выводить сообщения.
 
-		messagesfile.clear(); // Переводим каретку в начало файла.
-		messagesfile.seekg(0, std::ios::beg);
+		messagesFile.clear(); // Переводим каретку в начало файла.
+		messagesFile.seekg(0, std::ios::beg);
 
 		for (int i = 0; i < allLines; i++) { // Выводим нужное кол-во сообщений.
-			getline(messagesfile, str);
+			getline(messagesFile, str);
 			if (i == startLine) {
-				cout << str << endl;
+				cout << str << endl; // Выводим требуемые строки.
 				startLine++;
 			}
 		}
 		
-		messagesfile.close();
+		messagesFile.close();
 	}
-	else { // Если файл не открыт, то сообщаем об этом.
+	else { // Выводим сообщение об ошибке если файл не открылся или не создался.
 		cout << "Файл с сообщениями недоступен!" << endl;
 	}
 }
